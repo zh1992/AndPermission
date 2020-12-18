@@ -104,20 +104,6 @@
                 android:text="@string/permission_setting" />
         </TableRow>
 
-        <TableRow>
-
-            <View style="@style/Permission.Line" />
-        </TableRow>
-
-
-        <TableRow>
-
-            <Button
-                android:id="@+id/btn_overlay"
-                style="@style/Permission.Button.Weight.Horizontal"
-                android:text="@string/permission_overlay" />
-        </TableRow>
-
     </TableLayout>
 
 </LinearLayout>

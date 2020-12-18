@@ -76,10 +76,6 @@ final class RequestExecutor extends Thread implements Messenger.Callback {
                 iBridge.requestPermission(getName(), array);
                 break;
             }
-            case BridgeRequest.TYPE_OVERLAY: {
-                iBridge.requestOverlay(getName());
-                break;
-            }
         }
     }
 

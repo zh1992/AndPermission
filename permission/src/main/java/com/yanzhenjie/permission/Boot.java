@@ -15,12 +15,7 @@
  */
 package com.yanzhenjie.permission;
 
-import android.os.Build;
-
 import com.yanzhenjie.permission.option.Option;
-import com.yanzhenjie.permission.overlay.LRequestFactory;
-import com.yanzhenjie.permission.overlay.MRequestFactory;
-import com.yanzhenjie.permission.overlay.OverlayRequest;
 import com.yanzhenjie.permission.runtime.Runtime;
 import com.yanzhenjie.permission.runtime.option.RuntimeOption;
 import com.yanzhenjie.permission.source.Source;
@@ -29,24 +24,6 @@ import com.yanzhenjie.permission.source.Source;
  * Created by Zhenjie Yan on 2018/4/28.
  */
 public class Boot implements Option {
-
-    private static final OverlayRequestFactory OVERLAY_REQUEST_FACTORY;
-
-    static {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            OVERLAY_REQUEST_FACTORY = new MRequestFactory();
-        } else {
-            OVERLAY_REQUEST_FACTORY = new LRequestFactory();
-        }
-    }
-
-    public interface OverlayRequestFactory {
-
-        /**
-         * Create overlay request.
-         */
-        OverlayRequest create(Source source);
-    }
 
     private Source mSource;
 
@@ -57,10 +34,5 @@ public class Boot implements Option {
     @Override
     public RuntimeOption runtime() {
         return new Runtime(mSource);
-    }
-
-    @Override
-    public OverlayRequest overlay() {
-        return OVERLAY_REQUEST_FACTORY.create(mSource);
     }
 }

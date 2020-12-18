@@ -15,7 +15,6 @@
  */
 package com.yanzhenjie.permission.option;
 
-import com.yanzhenjie.permission.overlay.OverlayRequest;
 import com.yanzhenjie.permission.runtime.option.RuntimeOption;
 
 /**
@@ -27,9 +26,4 @@ public interface Option {
      * Handle runtime permissions.
      */
     RuntimeOption runtime();
-
-    /**
-     * Handle overlay permission.
-     */
-    OverlayRequest overlay();
 }

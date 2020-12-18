@@ -23,8 +23,6 @@ import android.view.KeyEvent;
 import androidx.annotation.NonNull;
 import androidx.annotation.Nullable;
 
-import com.yanzhenjie.permission.overlay.setting.MSettingPage;
-import com.yanzhenjie.permission.source.ActivitySource;
 import com.yanzhenjie.permission.source.Source;
 
 /**
@@ -50,16 +48,6 @@ public final class BridgeActivity extends Activity {
         source.startActivity(intent);
     }
 
-    /**
-     * Request for overlay.
-     */
-    static void requestOverlay(Source source, String suffix) {
-        Intent intent = new Intent(source.getContext(), BridgeActivity.class);
-        intent.putExtra(KEY_TYPE, BridgeRequest.TYPE_OVERLAY);
-        intent.putExtra(KEY_ACTION_SUFFIX, suffix);
-        source.startActivity(intent);
-    }
-
     private String mActionSuffix;
 
     @Override
@@ -74,11 +62,6 @@ public final class BridgeActivity extends Activity {
             case BridgeRequest.TYPE_PERMISSION: {
                 String[] permissions = intent.getStringArrayExtra(KEY_PERMISSIONS);
                 requestPermissions(permissions, BridgeRequest.TYPE_PERMISSION);
-                break;
-            }
-            case BridgeRequest.TYPE_OVERLAY: {
-                MSettingPage settingPage = new MSettingPage(new ActivitySource(this));
-                settingPage.start(BridgeRequest.TYPE_OVERLAY);
                 break;
             }
         }

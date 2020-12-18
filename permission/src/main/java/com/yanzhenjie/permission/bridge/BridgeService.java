@@ -45,10 +45,5 @@ public class BridgeService extends Service {
             BridgeActivity.requestPermission(mSource, suffix, permissions);
         }
 
-        @Override
-        public void requestOverlay(String suffix) throws RemoteException {
-            BridgeActivity.requestOverlay(mSource, suffix);
-        }
-
     };
 }

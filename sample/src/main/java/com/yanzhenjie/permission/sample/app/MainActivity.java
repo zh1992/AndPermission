@@ -19,7 +19,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Environment;
 import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -38,24 +37,9 @@ import com.yanzhenjie.permission.Action;
 import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.runtime.Permission;
 import com.yanzhenjie.permission.runtime.PermissionDef;
-import com.yanzhenjie.permission.sample.App;
-import com.yanzhenjie.permission.sample.InstallRationale;
-import com.yanzhenjie.permission.sample.NotifyListenerRationale;
-import com.yanzhenjie.permission.sample.NotifyRationale;
-import com.yanzhenjie.permission.sample.OverlayRationale;
 import com.yanzhenjie.permission.sample.R;
 import com.yanzhenjie.permission.sample.RuntimeRationale;
-import com.yanzhenjie.permission.sample.WriteSettingRationale;
-import com.yanzhenjie.permission.sample.util.FileUtils;
-import com.yanzhenjie.permission.sample.util.IOUtils;
-import com.yanzhenjie.permission.task.TaskExecutor;
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
 import java.util.List;
 
 /**
@@ -84,8 +68,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btn_request_activity_recognition).setOnClickListener(this);
         findViewById(R.id.btn_request_sms).setOnClickListener(this);
         findViewById(R.id.btn_setting).setOnClickListener(this);
-
-        findViewById(R.id.btn_overlay).setOnClickListener(this);
     }
 
     @Override
@@ -331,10 +313,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 setPermission();
                 break;
             }
-            case R.id.btn_overlay: {
-                requestPermissionForAlertWindow();
-                break;
-            }
         }
     }
 
@@ -405,30 +383,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 break;
             }
         }
-    }
-
-    private void requestPermissionForAlertWindow() {
-        AndPermission.with(this).overlay().rationale(new OverlayRationale()).onGranted(new Action<Void>() {
-            @Override
-            public void onAction(Void data) {
-                showAlertWindow();
-            }
-        }).onDenied(new Action<Void>() {
-            @Override
-            public void onAction(Void data) {
-                toast(R.string.message_overlay_failed);
-            }
-        }).start();
-    }
-
-
-    private void showAlertWindow() {
-        App.get().showLauncherView();
-
-        Intent backHome = new Intent(Intent.ACTION_MAIN);
-        backHome.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
-        backHome.addCategory(Intent.CATEGORY_HOME);
-        startActivity(backHome);
     }
 
     /**
