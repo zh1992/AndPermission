@@ -17,18 +17,12 @@ package com.yanzhenjie.permission;
 
 import android.os.Build;
 
-import com.yanzhenjie.permission.install.InstallRequest;
-import com.yanzhenjie.permission.install.NRequestFactory;
-import com.yanzhenjie.permission.install.ORequestFactory;
-import com.yanzhenjie.permission.notify.Notify;
-import com.yanzhenjie.permission.notify.option.NotifyOption;
 import com.yanzhenjie.permission.option.Option;
 import com.yanzhenjie.permission.overlay.LRequestFactory;
 import com.yanzhenjie.permission.overlay.MRequestFactory;
 import com.yanzhenjie.permission.overlay.OverlayRequest;
 import com.yanzhenjie.permission.runtime.Runtime;
 import com.yanzhenjie.permission.runtime.option.RuntimeOption;
-import com.yanzhenjie.permission.setting.Setting;
 import com.yanzhenjie.permission.source.Source;
 
 /**
@@ -36,29 +30,14 @@ import com.yanzhenjie.permission.source.Source;
  */
 public class Boot implements Option {
 
-    private static final InstallRequestFactory INSTALL_REQUEST_FACTORY;
     private static final OverlayRequestFactory OVERLAY_REQUEST_FACTORY;
 
     static {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.O) {
-            INSTALL_REQUEST_FACTORY = new ORequestFactory();
-        } else {
-            INSTALL_REQUEST_FACTORY = new NRequestFactory();
-        }
-
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             OVERLAY_REQUEST_FACTORY = new MRequestFactory();
         } else {
             OVERLAY_REQUEST_FACTORY = new LRequestFactory();
         }
-    }
-
-    public interface InstallRequestFactory {
-
-        /**
-         * Create apk installer request.
-         */
-        InstallRequest create(Source source);
     }
 
     public interface OverlayRequestFactory {
@@ -81,22 +60,7 @@ public class Boot implements Option {
     }
 
     @Override
-    public InstallRequest install() {
-        return INSTALL_REQUEST_FACTORY.create(mSource);
-    }
-
-    @Override
     public OverlayRequest overlay() {
         return OVERLAY_REQUEST_FACTORY.create(mSource);
-    }
-
-    @Override
-    public NotifyOption notification() {
-        return new Notify(mSource);
-    }
-
-    @Override
-    public Setting setting() {
-        return new Setting(mSource);
     }
 }

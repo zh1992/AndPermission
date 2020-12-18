@@ -15,11 +15,8 @@
  */
 package com.yanzhenjie.permission.option;
 
-import com.yanzhenjie.permission.install.InstallRequest;
-import com.yanzhenjie.permission.notify.option.NotifyOption;
 import com.yanzhenjie.permission.overlay.OverlayRequest;
 import com.yanzhenjie.permission.runtime.option.RuntimeOption;
-import com.yanzhenjie.permission.setting.Setting;
 
 /**
  * Created by Zhenjie Yan on 2/22/19.
@@ -32,22 +29,7 @@ public interface Option {
     RuntimeOption runtime();
 
     /**
-     * Handle request package install permission.
-     */
-    InstallRequest install();
-
-    /**
      * Handle overlay permission.
      */
     OverlayRequest overlay();
-
-    /**
-     * Handle notification permission.
-     */
-    NotifyOption notification();
-
-    /**
-     * Handle system setting.
-     */
-    Setting setting();
 }

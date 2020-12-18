@@ -41,18 +41,8 @@ public class BridgeService extends Service {
         private Source mSource = new ContextSource(BridgeService.this);
 
         @Override
-        public void requestAppDetails(String suffix) throws RemoteException {
-            BridgeActivity.requestAppDetails(mSource, suffix);
-        }
-
-        @Override
         public void requestPermission(String suffix, String[] permissions) throws RemoteException {
             BridgeActivity.requestPermission(mSource, suffix, permissions);
-        }
-
-        @Override
-        public void requestInstall(String suffix) throws RemoteException {
-            BridgeActivity.requestInstall(mSource, suffix);
         }
 
         @Override
@@ -60,24 +50,5 @@ public class BridgeService extends Service {
             BridgeActivity.requestOverlay(mSource, suffix);
         }
 
-        @Override
-        public void requestAlertWindow(String suffix) throws RemoteException {
-            BridgeActivity.requestAlertWindow(mSource, suffix);
-        }
-
-        @Override
-        public void requestNotify(String suffix) throws RemoteException {
-            BridgeActivity.requestNotify(mSource, suffix);
-        }
-
-        @Override
-        public void requestNotificationListener(String suffix) throws RemoteException {
-            BridgeActivity.requestNotificationListener(mSource, suffix);
-        }
-
-        @Override
-        public void requestWriteSetting(String suffix) throws RemoteException {
-            BridgeActivity.requestWriteSetting(mSource, suffix);
-        }
     };
 }

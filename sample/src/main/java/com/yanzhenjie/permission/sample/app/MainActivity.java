@@ -85,12 +85,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         findViewById(R.id.btn_request_sms).setOnClickListener(this);
         findViewById(R.id.btn_setting).setOnClickListener(this);
 
-        findViewById(R.id.btn_notification).setOnClickListener(this);
-        findViewById(R.id.btn_notification_listener).setOnClickListener(this);
-
-        findViewById(R.id.btn_install).setOnClickListener(this);
         findViewById(R.id.btn_overlay).setOnClickListener(this);
-        findViewById(R.id.btn_write_setting).setOnClickListener(this);
     }
 
     @Override
@@ -336,24 +331,8 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                 setPermission();
                 break;
             }
-            case R.id.btn_notification: {
-                requestNotification();
-                break;
-            }
-            case R.id.btn_notification_listener: {
-                requestNotificationListener();
-                break;
-            }
-            case R.id.btn_install: {
-                requestPermissionForInstallPackage();
-                break;
-            }
             case R.id.btn_overlay: {
                 requestPermissionForAlertWindow();
-                break;
-            }
-            case R.id.btn_write_setting: {
-                requestWriteSystemSetting();
                 break;
             }
         }
@@ -428,153 +407,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }
     }
 
-    /**
-     * Request notification permission.
-     */
-    private void requestNotification() {
-        AndPermission.with(this)
-            .notification()
-            .permission()
-            .rationale(new NotifyRationale())
-            .onGranted(new Action<Void>() {
-                @Override
-                public void onAction(Void data) {
-                    toast(R.string.successfully);
-                }
-            })
-            .onDenied(new Action<Void>() {
-                @Override
-                public void onAction(Void data) {
-                    toast(R.string.failure);
-                }
-            })
-            .start();
-    }
-
-    /**
-     * Request notification listener.
-     */
-    private void requestNotificationListener() {
-        AndPermission.with(this)
-            .notification()
-            .listener()
-            .rationale(new NotifyListenerRationale())
-            .onGranted(new Action<Void>() {
-                @Override
-                public void onAction(Void data) {
-                    toast(R.string.successfully);
-                }
-            })
-            .onDenied(new Action<Void>() {
-                @Override
-                public void onAction(Void data) {
-                    toast(R.string.failure);
-                }
-            })
-            .start();
-    }
-
-    /**
-     * Request to read and write external storage permissions.
-     */
-    private void requestPermissionForInstallPackage() {
-        if (!FileUtils.externalAvailable()) {
-            new AlertDialog.Builder(this)
-                .setTitle(R.string.title_dialog)
-                .setMessage(R.string.message_error_storeage_inavailable)
-                .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which) {
-                        dialog.dismiss();
-                    }
-                })
-                .show();
-            return;
-        }
-
-        AndPermission.with(this)
-            .runtime()
-            .permission(Permission.Group.STORAGE)
-            .rationale(new RuntimeRationale())
-            .onGranted(new Action<List<String>>() {
-                @Override
-                public void onAction(List<String> data) {
-                    writeApkForInstallPackage();
-                }
-            })
-            .onDenied(new Action<List<String>>() {
-                @Override
-                public void onAction(List<String> data) {
-                    toast(R.string.message_install_failed);
-                }
-            })
-            .start();
-    }
-
-    private void writeApkForInstallPackage() {
-        new TaskExecutor<File>(MainActivity.this) {
-            @Override
-            protected File doInBackground(Void... voids) {
-                try {
-                    InputStream input = getAssets().open("android.apk");
-                    File apk = new File(FileUtils.getExternalDir(App.get(), Environment.DIRECTORY_DOWNLOADS), "AndPermission.apk");
-                    if (apk.exists()) return apk;
-
-                    OutputStream output = new BufferedOutputStream(new FileOutputStream(apk));
-
-                    IOUtils.write(input, output);
-                    IOUtils.close(output);
-
-                    return apk;
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-
-                return null;
-            }
-
-            @Override
-            protected void onFinish(File apkFile) {
-                if (apkFile == null) {
-                    new AlertDialog.Builder(MainActivity.this)
-                        .setTitle(R.string.title_dialog)
-                        .setMessage(R.string.message_error_save_failed)
-                        .setPositiveButton(R.string.ok, new DialogInterface.OnClickListener() {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which) {
-                            }
-                        })
-                        .show();
-                } else {
-                    installPackage(apkFile);
-                }
-            }
-        }.execute();
-    }
-
-    /**
-     * Install package.
-     */
-    private void installPackage(File apkFile) {
-        AndPermission.with(this)
-            .install()
-            .file(apkFile)
-            .rationale(new InstallRationale())
-            .onGranted(new Action<File>() {
-                @Override
-                public void onAction(File data) {
-                    // Installing.
-                }
-            })
-            .onDenied(new Action<File>() {
-                @Override
-                public void onAction(File data) {
-                    // The user refused to install.
-                }
-            })
-            .start();
-    }
-
     private void requestPermissionForAlertWindow() {
         AndPermission.with(this).overlay().rationale(new OverlayRationale()).onGranted(new Action<Void>() {
             @Override
@@ -589,19 +421,6 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
         }).start();
     }
 
-    private void requestWriteSystemSetting() {
-        AndPermission.with(this).setting().write().rationale(new WriteSettingRationale()).onGranted(new Action<Void>() {
-            @Override
-            public void onAction(Void data) {
-                toast(R.string.successfully);
-            }
-        }).onDenied(new Action<Void>() {
-            @Override
-            public void onAction(Void data) {
-                toast(R.string.failure);
-            }
-        }).start();
-    }
 
     private void showAlertWindow() {
         App.get().showLauncherView();

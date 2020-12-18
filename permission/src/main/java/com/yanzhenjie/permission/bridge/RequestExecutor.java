@@ -70,38 +70,14 @@ final class RequestExecutor extends Thread implements Messenger.Callback {
 
     private void executeCurrent(IBridge iBridge) throws RemoteException {
         switch (mRequest.getType()) {
-            case BridgeRequest.TYPE_APP_DETAILS: {
-                iBridge.requestAppDetails(getName());
-                break;
-            }
             case BridgeRequest.TYPE_PERMISSION: {
                 List<String> permissions = mRequest.getPermissions();
                 String[] array = permissions.toArray(new String[0]);
                 iBridge.requestPermission(getName(), array);
                 break;
             }
-            case BridgeRequest.TYPE_INSTALL: {
-                iBridge.requestInstall(getName());
-                break;
-            }
             case BridgeRequest.TYPE_OVERLAY: {
                 iBridge.requestOverlay(getName());
-                break;
-            }
-            case BridgeRequest.TYPE_ALERT_WINDOW: {
-                iBridge.requestAlertWindow(getName());
-                break;
-            }
-            case BridgeRequest.TYPE_NOTIFY: {
-                iBridge.requestNotify(getName());
-                break;
-            }
-            case BridgeRequest.TYPE_NOTIFY_LISTENER: {
-                iBridge.requestNotificationListener(getName());
-                break;
-            }
-            case BridgeRequest.TYPE_WRITE_SETTING: {
-                iBridge.requestWriteSetting(getName());
                 break;
             }
         }
