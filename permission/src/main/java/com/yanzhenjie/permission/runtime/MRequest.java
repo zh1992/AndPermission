@@ -15,6 +15,8 @@
  */
 package com.yanzhenjie.permission.runtime;
 
+import android.annotation.SuppressLint;
+
 import androidx.annotation.NonNull;
 
 import com.yanzhenjie.permission.RequestExecutor;
@@ -96,6 +98,7 @@ class MRequest extends BaseRequest implements RequestExecutor, BridgeRequest.Cal
         onCallback();
     }
 
+    @SuppressLint("StaticFieldLeak")
     @Override
     public void onCallback() {
         new TaskExecutor<List<String>>(mSource.getContext()) {

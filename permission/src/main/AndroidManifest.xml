@@ -26,22 +26,11 @@
     <uses-permission android:name="${applicationId}.andpermission.bridge" />
 
     <application>
-        <service
-            android:name=".bridge.BridgeService"
-            android:exported="false"
-            android:permission="${applicationId}.andpermission.bridge"
-            android:process=":permission">
-            <intent-filter>
-                <action android:name="${applicationId}.andpermission.bridge" />
-            </intent-filter>
-        </service>
-
         <activity
             android:name=".bridge.BridgeActivity"
             android:configChanges="orientation"
             android:exported="false"
             android:permission="${applicationId}.andpermission.bridge"
-            android:process=":permission"
             android:theme="@style/Permission.Theme.Activity.Transparent" />
 
         <provider
