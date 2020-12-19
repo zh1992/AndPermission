@@ -51,9 +51,20 @@ public interface PermissionRequest {
     PermissionRequest onGranted(@NonNull Action<List<String>> granted);
 
     /**
-     * Action to be taken when all permissions are denied.
+     * Action to be taken when any permission is denied.
      */
     PermissionRequest onDenied(@NonNull Action<List<String>> denied);
+
+    /**
+     * Action to be taken when any permission is denied.
+     * and some shouldShowRequestPermissionRationale() return false
+     */
+    PermissionRequest onAlwaysDenied(@NonNull Action<List<String>> denied);
+
+    /**
+     * scene info
+     */
+    PermissionRequest message(String message);
 
     /**
      * Request permission.

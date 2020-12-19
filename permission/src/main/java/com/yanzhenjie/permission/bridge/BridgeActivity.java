@@ -58,12 +58,9 @@ public final class BridgeActivity extends Activity {
         Intent intent = getIntent();
         int operation = intent.getIntExtra(KEY_TYPE, -1);
         mActionSuffix = intent.getStringExtra(KEY_ACTION_SUFFIX);
-        switch (operation) {
-            case BridgeRequest.TYPE_PERMISSION: {
-                String[] permissions = intent.getStringArrayExtra(KEY_PERMISSIONS);
-                requestPermissions(permissions, BridgeRequest.TYPE_PERMISSION);
-                break;
-            }
+        if (operation == BridgeRequest.TYPE_PERMISSION) {
+            String[] permissions = intent.getStringArrayExtra(KEY_PERMISSIONS);
+            requestPermissions(permissions, BridgeRequest.TYPE_PERMISSION);
         }
     }
 

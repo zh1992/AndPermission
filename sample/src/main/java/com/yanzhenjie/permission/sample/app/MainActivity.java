@@ -223,7 +223,7 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
                             case 6: {
                                 // ADD_VOICEMAIL is special, not shown here.
                                 requestPermission(Permission.READ_PHONE_STATE, Permission.CALL_PHONE, Permission.READ_PHONE_NUMBERS,
-                                    Permission.ANSWER_PHONE_CALLS, Permission.USE_SIP);
+                                        Permission.ANSWER_PHONE_CALLS, Permission.USE_SIP);
                                 break;
                             }
                         }
@@ -321,25 +321,29 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
      */
     private void requestPermission(@PermissionDef String... permissions) {
         AndPermission.with(this)
-            .runtime()
-            .permission(permissions)
-            .rationale(new RuntimeRationale())
-            .onGranted(new Action<List<String>>() {
-                @Override
-                public void onAction(List<String> permissions) {
-                    toast(R.string.successfully);
-                }
-            })
-            .onDenied(new Action<List<String>>() {
-                @Override
-                public void onAction(@NonNull List<String> permissions) {
-                    toast(R.string.failure);
-                    if (AndPermission.hasAlwaysDeniedPermission(MainActivity.this, permissions)) {
+                .runtime()
+                .permission(permissions)
+                .message("因为xxx，yyy需要zzz权限;")
+                .rationale(new RuntimeRationale())
+                .onGranted(new Action<List<String>>() {
+                    @Override
+                    public void onAction(List<String> permissions) {
+                        toast(R.string.successfully);
+                    }
+                })
+                .onDenied(new Action<List<String>>() {
+                    @Override
+                    public void onAction(@NonNull List<String> permissions) {
+                        toast(R.string.failure);
+                    }
+                })
+                .onAlwaysDenied(new Action<List<String>>() {
+                    @Override
+                    public void onAction(List<String> permissions) {
                         showSettingDialog(MainActivity.this, permissions);
                     }
-                }
-            })
-            .start();
+                })
+                .start();
     }
 
     /**
@@ -348,23 +352,23 @@ public class MainActivity extends AppCompatActivity implements View.OnClickListe
     public void showSettingDialog(Context context, final List<String> permissions) {
         List<String> permissionNames = Permission.transformText(context, permissions);
         String message = context.getString(R.string.message_permission_always_failed,
-            TextUtils.join("\n", permissionNames));
+                TextUtils.join("\n", permissionNames));
 
         new AlertDialog.Builder(context).setCancelable(false)
-            .setTitle(R.string.title_dialog)
-            .setMessage(message)
-            .setPositiveButton(R.string.setting, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    setPermission();
-                }
-            })
-            .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                }
-            })
-            .show();
+                .setTitle(R.string.title_dialog)
+                .setMessage(message)
+                .setPositiveButton(R.string.setting, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        setPermission();
+                    }
+                })
+                .setNegativeButton(R.string.cancel, new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                    }
+                })
+                .show();
     }
 
     /**

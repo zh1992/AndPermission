@@ -15,12 +15,12 @@
  */
 package com.yanzhenjie.permission.runtime;
 
-import android.content.Context;
 import android.os.Build;
 
 import androidx.annotation.NonNull;
 
 import com.yanzhenjie.permission.Action;
+import com.yanzhenjie.permission.AndPermission;
 import com.yanzhenjie.permission.Rationale;
 import com.yanzhenjie.permission.RequestExecutor;
 import com.yanzhenjie.permission.checker.PermissionChecker;
@@ -37,14 +37,12 @@ abstract class BaseRequest implements PermissionRequest {
 
     private Source mSource;
 
-    private Rationale<List<String>> mRationale = new Rationale<List<String>>() {
-        @Override
-        public void showRationale(Context context, List<String> data, RequestExecutor executor) {
-            executor.execute();
-        }
-    };
+    private Rationale<List<String>> mRationale;
+
     private Action<List<String>> mGranted;
     private Action<List<String>> mDenied;
+    private Action<List<String>> mAlwaysDenied;
+    private String mMessage;
 
     BaseRequest(Source source) {
         this.mSource = source;
@@ -68,28 +66,47 @@ abstract class BaseRequest implements PermissionRequest {
         return this;
     }
 
-    /**
-     * Why permissions are required.
-     */
-    final void showRationale(List<String> rationaleList, RequestExecutor executor) {
-        mRationale.showRationale(mSource.getContext(), rationaleList, executor);
+    @Override
+    public PermissionRequest onAlwaysDenied(@NonNull Action<List<String>> denied) {
+        this.mAlwaysDenied = denied;
+        return this;
     }
 
-    /**
-     * Callback acceptance status.
-     */
+    @Override
+    public PermissionRequest message(String message) {
+        this.mMessage = message;
+        return this;
+    }
+
+    protected boolean showRationaleOrNot(List<String> deniedPermissions) {
+        return mRationale != null && !getRationalePermissions(mSource, deniedPermissions).isEmpty();
+    }
+
+    protected boolean showAlwaysDeniedOrNot(List<String> deniedPermissions) {
+        return mAlwaysDenied != null && AndPermission.hasAlwaysDeniedPermission(mSource.getContext(), deniedPermissions);
+    }
+
     final void callbackSucceed(List<String> grantedList) {
         if (mGranted != null) {
             mGranted.onAction(grantedList);
         }
     }
 
-    /**
-     * Callback rejected state.
-     */
     final void callbackFailed(List<String> deniedList) {
         if (mDenied != null) {
             mDenied.onAction(deniedList);
+        }
+    }
+
+    final void callbackRationale(List<String> rationaleList, RequestExecutor executor) {
+        if (mRationale != null) {
+            mRationale.showRationale(mSource.getContext(), rationaleList, executor);
+        }
+    }
+
+    final void callbackAlwaysDenied(List<String> deniedList) {
+        if (mAlwaysDenied != null) {
+            mAlwaysDenied.onAction(deniedList);
         }
     }
 

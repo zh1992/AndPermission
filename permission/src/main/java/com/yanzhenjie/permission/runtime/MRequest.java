@@ -73,12 +73,7 @@ class MRequest extends BaseRequest implements RequestExecutor, BridgeRequest.Cal
 
         mDeniedPermissions = getDeniedPermissions(STANDARD_CHECKER, mSource, mPermissions);
         if (mDeniedPermissions.size() > 0) {
-            List<String> rationaleList = getRationalePermissions(mSource, mDeniedPermissions);
-            if (rationaleList.size() > 0) {
-                showRationale(rationaleList, this);
-            } else {
-                execute();
-            }
+            execute();
         } else {
             onCallback();
         }
@@ -95,13 +90,12 @@ class MRequest extends BaseRequest implements RequestExecutor, BridgeRequest.Cal
 
     @Override
     public void cancel() {
-        onCallback();
     }
 
     @SuppressLint("StaticFieldLeak")
     @Override
     public void onCallback() {
-        new TaskExecutor<List<String>>(mSource.getContext()) {
+        new TaskExecutor<List<String>>() {
             @Override
             protected List<String> doInBackground(Void... voids) {
                 return getDeniedPermissions(DOUBLE_CHECKER, mSource, mPermissions);
@@ -111,6 +105,10 @@ class MRequest extends BaseRequest implements RequestExecutor, BridgeRequest.Cal
             protected void onFinish(List<String> deniedList) {
                 if (deniedList.isEmpty()) {
                     callbackSucceed(mPermissions);
+                } else if (showRationaleOrNot(deniedList)) {
+                    callbackRationale(deniedList, MRequest.this);
+                } else if (showAlwaysDeniedOrNot(deniedList)) {
+                    callbackAlwaysDenied(deniedList);
                 } else {
                     callbackFailed(deniedList);
                 }
